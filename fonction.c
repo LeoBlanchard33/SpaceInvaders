@@ -80,7 +80,7 @@ void recap_regle(void) {
 	vt100_clear_screen();
 	fenetre('_', '|');
 	vt100_move(5, 4);
-	serial_puts("Vous contrÃ´lez un vaisseau pouvant tirer");
+	serial_puts("Vous contrôlez un vaisseau pouvant tirer");
 	vt100_move(5, 6);
 	serial_puts("Les ennemis descendent dans la zone de jeu");
 	vt100_move(5, 8);
@@ -88,9 +88,10 @@ void recap_regle(void) {
 	vt100_move(5, 14);
 	serial_puts("Fonctionnement :");
 	vt100_move(5, 16);
-	serial_puts("Q : Deplacement Ã  gauche et D : Deplacment Ã  droite");
+	serial_puts("Q : Deplacement à gauche et D : Deplacment à droite");
 	vt100_move(5, 18);
-	serial_puts("Z : Tirer (Attendre que le tir ce finisse avant de tirer Ã  nouveau");
+	serial_puts(
+			"Z : Tirer (Attendre que le tir ce finisse avant de tirer à nouveau");
 	vt100_move(65, 28);
 	serial_puts("Appuyer sur une touche");
 	appuye_touche();
@@ -143,13 +144,14 @@ void affiche_tir(signed char feu) {
 	}
 }
 
-/*void affiche_tir_enemis(signed char feu) {
- if (feu == 'z' || feu == 'Z') {
- for (int i = 0; i <= 7; i++) {
- tir_enemis[i].y = enemis[i+8].y;
- }
- }
- }*/
+void affiche_tir_enemis(signed char feu) {
+	if (feu == 'z' || feu == 'Z') {
+		for (int i = 0; i <= 7; i++) {
+			tir_enemis[i].y = enemis[i + 8].y + 2;
+			tir_enemis[i].x = enemis[i + 8].x + 1;
+		}
+	}
+}
 
 //Lancement du tir
 void tir_go(void) {
@@ -159,14 +161,16 @@ void tir_go(void) {
 	serial_puts(" ");
 }
 
-/*void tir_enemis_go(void) {
- for (int i = 0; i <= 7; i++) {
- vt100_move(enemis[i].x + 1, tir_enemis[i].y + 2);
- serial_puts("|");
- vt100_move(enemis[i].x + 1, tir_enemis[i].y + 1);
- serial_puts(" ");
- }
- }*/
+void tir_enemis_go(void) {
+	for (int i = 0; i <= 7; i++) {
+		if (tir_enemis[i].y != 0) {
+			vt100_move(tir_enemis[i].x, tir_enemis[i].y);
+			serial_puts("|");
+			vt100_move(tir_enemis[i].x, tir_enemis[i].y - 1);
+			serial_puts(" ");
+		}
+	}
+}
 
 //Affichage et deplacement du vaisseau
 void deplacement_vaisseau(signed char depla) {
@@ -212,11 +216,11 @@ void mouvement_enemis(void) {
 	position_enemis(k, hauteur_L1, hauteur_L2);
 }
 
-//Test si un ennemis est touchÃ© par un tir
+//Test si un ennemis est touché par un tir
 void hit_box(void) {
 	for (int i = 0; i <= 15; i++) {
-		if ((enemis[i].x == tir[0].x || enemis[i].x + 1 == tir[0].x
-				|| enemis[i].x + 2 == tir[0].x) && (enemis[i].y == tir[0].y)) {
+		if ((enemis[i].x + 1 == tir[0].x || enemis[i].x + 2 == tir[0].x
+				|| enemis[i].x + 3 == tir[0].x) && (enemis[i].y == tir[0].y)) {
 			enemis[i].mort = 1;
 			vt100_move(enemis[i].x, enemis[i].y);
 			serial_puts("     ");
@@ -235,14 +239,19 @@ void mouvement_tir(void) {
 	serial_puts(" ");
 }
 
-/*void mouvement_tir_enemis(void) {
- for (int i = 0; i <= 7; i++) {
- if (enemis[i + 8].y <= tir_enemis[i].y) {
- tir_enemis[i + 8].y = tir_enemis[i].y - 1;
- tir_enemis_go();
- }
- }
- }*/
+void mouvement_tir_enemis(void) {
+	for (int i = 0; i <= 7; i++) {
+		if (enemis[i + 8].y <= tir_enemis[i].y) {
+			tir_enemis[i].y = tir_enemis[i].y + 1;
+			tir_enemis_go();
+		}
+		vt100_move(tir_enemis[i].x, 28);
+		serial_puts(" ");
+		if (tir_enemis[i].y >= 28) {
+			tir_enemis[i].y = 0;
+		}
+	}
+}
 
 //Test de fin de jeu
 unsigned char condition_fin(void) {
@@ -373,9 +382,9 @@ void jeu(void) {
 	signed char touche = serial_get_last_char();
 	mouvement_enemis();
 	mouvement_tir();
-//	mouvement_tir_enemis();
+	mouvement_tir_enemis();
 	affiche_tir(touche);
-//	affiche_tir_enemis(touche);
+	affiche_tir_enemis(touche);
 	hit_box();
 	affiche_enemis();
 	c_score();
