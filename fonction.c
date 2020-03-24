@@ -136,7 +136,7 @@ void affiche_enemis(void) {
 	}
 }
 
-//Affiche
+//Initialise le tir si la touche est presser
 void affiche_tir(signed char feu) {
 	if (feu == 'z' || feu == 'Z') {
 		tir[0].x = vx + 3;
@@ -144,6 +144,7 @@ void affiche_tir(signed char feu) {
 	}
 }
 
+//Initialise les tirs ennemis si la touche est presser
 void affiche_tir_enemis(signed char feu) {
 	if (feu == 'z' || feu == 'Z') {
 		for (int i = 0; i <= 7; i++) {
@@ -161,6 +162,7 @@ void tir_go(void) {
 	serial_puts(" ");
 }
 
+//Lancement des tirs ennemis
 void tir_enemis_go(void) {
 	for (int i = 0; i <= 7; i++) {
 		if (tir_enemis[i].y != 0) {
@@ -239,6 +241,7 @@ void mouvement_tir(void) {
 	serial_puts(" ");
 }
 
+//Calcul des deplacements des tirs ennemis
 void mouvement_tir_enemis(void) {
 	for (int i = 0; i <= 7; i++) {
 		if (enemis[i + 8].y <= tir_enemis[i].y) {
