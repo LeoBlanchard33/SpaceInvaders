@@ -91,7 +91,7 @@ void recap_regle(void) {
 	serial_puts("Q : Deplacement à gauche et D : Deplacment à droite");
 	vt100_move(5, 18);
 	serial_puts(
-			"Z : Tirer (Attendre que le tir ce finisse avant de tirer à nouveau");
+			"Z : Tirer (Attendre que le tir ce finisse avant de tirer à nouveau)");
 	vt100_move(65, 28);
 	serial_puts("Appuyer sur une touche");
 	appuye_touche();
@@ -209,8 +209,8 @@ void mouvement_enemis(void) {
 		direction = 0.2;
 	}
 	if (hauteur_L2 < 24) {
-		hauteur_L1 = hauteur_L1 + 0.01;
-		hauteur_L2 = hauteur_L2 + 0.01;
+		hauteur_L1 = hauteur_L1 + 0.1;
+		hauteur_L2 = hauteur_L2 + 0.1;
 	}
 	if (hauteur_L2 > 23) {
 		fin = 1;
