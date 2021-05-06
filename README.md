@@ -1,2 +1,2 @@
 # SpaceInvaders
-Jeu pour cours de C
+SpaceInvaders STM32
